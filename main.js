@@ -58,6 +58,7 @@ const product = {
   let quantity = 0;
   let currentSize = product.wrist_sizes[0].label;
   const selectedSize = product.wrist_sizes.find(item => item.label === currentSize);
+  const cartItems = [];
   
 
   const handleSelectedColor = (color,inx) => {
@@ -76,7 +77,7 @@ const product = {
   }
 
   const handleSelectedSize = (size,inx) => {
-    console.log(size);
+    currentSize = size
     const allSizes = document.querySelectorAll('.sizes');
     const labels = document.querySelectorAll('.label');
     labels.forEach((item,idx) => {
@@ -99,6 +100,36 @@ const product = {
     })
   }
 
+  const handleAddToCart = (id,image,name,color,size,qty,price) => {
+
+    console.log(image,name,color,size,qty,price);
+
+    if(quantity < 1){
+      alert('please add an item first'); 
+      return
+    }
+
+    const products = {
+      id,
+      image,
+      name,
+      color,
+      size,
+      qty,
+      price
+    }
+
+    const existingId =  cartItems.findIndex((pdt) => product.id === pdt.id && pdt.image === products.image && pdt.size === products.size );
+   
+
+    if(cartItems[existingId]){
+      const updatedItem = cartItems;
+      updatedItem[existingId].qty += qty;
+    }else{
+      cartItems.push(products)
+    }
+    alert('Succesfully added');
+  }
   
 
   
@@ -151,7 +182,7 @@ const product = {
                   type="text"
                   value="${quantity}"
                   readOnly
-                  class="w-16 h-10 border-0 text-center outline-none"
+                  class="w-16 h-10 border-0 font-normal text-center text-[#364A63] outline-none"
                 />
                 <button
                   id="plus"
@@ -161,7 +192,8 @@ const product = {
                 </button>
               </div>
               <button 
-                class="flex-1 bg-[#6576FF] text-white text-nowrap px-[18px] py-2 rounded-[3px] outline-none focus:outline-none"
+                id="cartBtn"
+                class="flex-1 bg-[#6576FF] text-[13px] font-bold text-white text-nowrap px-[18px] py-2 rounded-[3px] outline-none focus:outline-none"
               >
                 Add to Cart
               </button>
@@ -221,6 +253,8 @@ const product = {
     };
     document.getElementById('plus').addEventListener('click',handleIncrement)
     document.getElementById('minus').addEventListener('click',handleDecrement);
+    document.getElementById('cartBtn').addEventListener('click',() => handleAddToCart(product.id,selectedColor.image,product.name,selectedColor.name,currentSize.label,quantity,currentSize.price));
+
   };
 
   // Initialize product rendering
