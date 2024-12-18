@@ -255,8 +255,8 @@ const product = {
           </div>
           <h5 class="text-[#6576FF] text-2xl text-start font-bold">
             <div class="flex items-center gap-2">
-              <span class="text-[#8091A7] text-xl font-light line-through">$${product.price.original}.00</span>
-              <span class="font-normal">$${product.price.discounted}.00</span>
+              <span class="text-[#8091A7] text-xl  line-through font-normal">$${product.price.original}.00</span>
+              <span >$${product.price.discounted}.00</span>
             </div>
           </h5>
           <p class="text-[#8091A7] text-lg text-start">${product.description}</p>
