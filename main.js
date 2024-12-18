@@ -208,7 +208,7 @@ const product = {
     const starsContainer = document.querySelector('.stars');
     const emptyStar = '/asset/star.png';
     const fullStar = '/asset/star-fill.png';
-    const halfStar = '/asset/star-fill.png';
+    const halfStar = '/asset/star-half-fill.png';
     
     const totalStars = 5;
     const value = product.rating; 
@@ -247,7 +247,7 @@ const product = {
           <img src="${selectedColor.image}" alt="${product.name}" class="h-auto selected-image w-auto flex-1 lg:h-[720px] lg:max-w-[600px]">
         </div>
         <div class="flex flex-col flex-1 justify-start space-y-5">
-          <h2 class="text-[40px] text-[#364A63] font-bold">${product.name}</h2>
+          <h2 class="text-[40px] text-[#364A63] text-nowrap font-bold">${product.name}</h2>
           <div class="flex gap-1 items-center">
             <div class="stars flex gap-1 text-lg items-center"></div>
             <div  data-rating="${product.rating}"></div>
@@ -256,15 +256,15 @@ const product = {
           <h5 class="text-[#6576FF] text-2xl text-start font-bold">
             <div class="flex items-center gap-2">
               <span class="text-[#8091A7] text-xl font-light line-through">$${product.price.original}.00</span>
-              <span>$${product.price.discounted}.00</span>
+              <span class="font-normal">$${product.price.discounted}.00</span>
             </div>
           </h5>
           <p class="text-[#8091A7] text-lg text-start">${product.description}</p>
-          <div class="flex gap-[43px] text-[#8091A7] text-sm">
+          <div class="flex gap-x-[43px] text-[#8091A7] text-sm">
             <p>Type</p>
             <p>Model Number</p>
           </div>
-          <div class="flex gap-6 text-[#364A63] text-base font-bold">
+          <div class="flex gap-7 text-[#364A63] text-base font-bold">
             <p>${product.type}</p>
             <p>${product.model_number}</p>
           </div>
