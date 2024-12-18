@@ -8,26 +8,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css"> 
 </head>
-<body class="roboto">
-    <section id="product-section" class="flex flex-col lg:flex-row gap-10 p-8 mx-auto"></section>
-    <div class="flex justify-center mt-20">
+<body class="max-w-[1280px]">
+    <section id="product-section" class="flex flex-col lg:flex-row gap-10 p-5 md:py-8 md:px-20 mx-auto"></section>
+    <div class="flex justify-center mt-10 py-5">
         <button
+        onclick="cartItemsRender()"
         style="filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.25));"
         id="checkout-button"
-        class="bg-[#FFBB5A] text-[#364A63] flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-full"
+        class="bg-[#FFBB5A] roboto text-[#364A63] flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-full"
         >
         Checkout <span id="cart-count" class="bg-white px-2 py-1 rounded-md">0</span>
         </button>
     </div>
-    <div id="modal"  class="modal-overlay fixed inset-0 bg-black bg-opacity-50  justify-center z-[9999] items-center hidden px-4">
+    <div id="modal" class="hidden modal-overlay fixed inset-0 bg-black bg-opacity-50  justify-center z-[9999] items-center px-4">
         <dialog
           open
-          class=" w-[90%] md:w-[670px] max-h-[480px] p-5 rounded-2xl flex flex-col justify-center bg-white overflow-y-auto text-black "
+          class=" w-[90%] md:w-[670px] max-h-[480px] p-5 rounded-2xl flex flex-col justify-center bg-white overflow-y-clip text-black "
         >
-          <div class="flex justify-between pt-10 pb-5 items-center">
+          <div class="flex justify-between pt-5 pb-5 items-center overflow-y-hidden">
             <h3 class="font-bold text-[22px] text-[#364A63]">Your Cart</h3>
           </div>
-          <div class="mt-3">
+          <div id="modal-content" class="mt-3 overflow-x-auto">
           
           </div>
         </dialog>

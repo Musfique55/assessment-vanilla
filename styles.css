@@ -2,9 +2,16 @@
 *{
     box-sizing: border-box;
     overflow-x: hidden;
-    font-family: "Roboto", serif;
+    font-family: "Roboto", sans-serif;
 }
 
 .roboto {
-    font-family: "Roboto", serif;
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+}
+
+body .roboto {
+    font-family: "Roboto", sans-serif !important;
+    
   }
+  

@@ -79,7 +79,6 @@ const product = {
   }
 
   const handleSelectedSize = (size,inx) => {
-    console.log(size);
     currentSize = size;
     const allSizes = document.querySelectorAll('.sizes');
     const labels = document.querySelectorAll('.label');
@@ -104,7 +103,8 @@ const product = {
   }
 
   const handleAddToCart = (id,image,name,color,size,qty,price) => {
-    if(quantity < 1){
+    const quantityInput = document.getElementById('quantity-input');
+    if(quantityInput.value < 1){
       alert('please add an item first'); 
       return
     }
@@ -133,12 +133,21 @@ const product = {
     alert('Succesfully added');
     
   }
+
+  const handleModalClose = () => {
+    const modal = document.querySelector('#modal');
+    modal.classList.add('hidden'); 
+    modal.classList.remove('flex');
+  }
+
   
   
   const cartItemsRender = () => {
-    const cartItemDiv = document.querySelector('#cart-items');
+    const modal = document.querySelector('#modal');
+    const cartItemDiv = document.querySelector('#modal-content');
     const cartDiv = document.createElement('div');
     cartItemDiv.innerHTML = "";
+    cartDiv.classList.add('overflow-x-auto','md:overflow-x-hidden')
     const cartItemHtml = cartItems.map((item) =>  `
        <div class='grid grid-cols-8 gap-2 py-4 border-b items-center '>
               <div class='col-span-4 gap-2 flex items-center'>
@@ -149,11 +158,9 @@ const product = {
               <p class='text-sm text-[#364A63] font-bold leading-[23.1px]'>${item.size}</p>
               <p class='text-sm text-[#364A63] font-bold leading-[23.1px]'>${item.qty}</p>
               <p class='text-sm text-[#364A63] font-bold leading-[23.1px]'>$${item.price * item.qty}.00</p>
-        </div>
-      
+        </div>      
             `
       ).join('');
-
 
     cartDiv.innerHTML = `
       <div class='md:max-w-[651px] md:w-auto w-[651px] pr-5 md:pr-0 text-center overflow-x-auto md:overflow-x-hidden'>
@@ -177,7 +184,7 @@ const product = {
               
             </div>
             <div class='flex flex-1 justify-end gap-3 mt-5'>
-              <button class='border border-[#DBDFEA] rounded-sm px-4 py-2 focus:outline-none text-[#364A63] text-[13px] font-bold' onClick={onClose}>Continue Shopping</button>
+              <button id="modal-close-btn" class='border border-[#DBDFEA] rounded-sm px-4 py-2 focus:outline-none text-[#364A63] text-[13px] font-bold'>Continue Shopping</button>
               <button class='bg-[#6576FF] px-3 py-2 text-white  rounded-md focus:outline-none  text-[13px] font-bold'>Checkout</button>
             </div>
           </div>
@@ -188,141 +195,176 @@ const product = {
     quantityTotal = cartItems.reduce((prev,curr) => prev + curr.qty,0);
     const priceTotalDiv = document.querySelector('#price-total');
     const quantityTotalDiv = document.querySelector('#quantity-total');
+    const modalCloseBtn = document.querySelector('#modal-close-btn');
     quantityTotalDiv.innerHTML = `${quantityTotal}`
     priceTotalDiv.innerHTML = `$${priceTotal}.00`
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modalCloseBtn.addEventListener('click',handleModalClose)
   }
 
 
+  const renderStar = () => {
+    const starsContainer = document.querySelector('.stars');
+    const emptyStar = '/asset/star.png';
+    const fullStar = '/asset/star-fill.png';
+    const halfStar = '/asset/star-fill.png';
+    
+    const totalStars = 5;
+    const value = product.rating; 
   
+    starsContainer.innerHTML = '';
   
+    for (let i = 1; i <= totalStars; i++) {
+      const star = document.createElement('img'); 
+  
+      if (i <= value) {
+        // Full star
+        star.src = fullStar
+        star.style.cursor = 'pointer'
+      } else if (i - value <= 0.5) {
+        // Half star
+        star.src = halfStar
+        star.style.cursor = 'pointer'
+      } else {
+        // Empty star
+        star.src = emptyStar
+        star.style.cursor = 'pointer'
+      }
+  
+      starsContainer.appendChild(star);
+    }
+  };
   
 
-const renderProduct = (product) => {
-    const section = document.getElementById("product-section");
 
-    // Main product content
-    section.innerHTML = `
-      <div >
-        <img src="${selectedColor.image}" alt="${product.name}" class="h-auto selected-image w-auto flex-1 lg:h-[720px] lg:max-w-[600px]">
-      </div>
-      <div class="flex flex-col flex-1 justify-start space-y-5">
-        <h2 class="text-[40px] text-[#364A63] font-bold">${product.name}</h2>
-        <div class="flex gap-2 items-center">
-          <div class="stars" data-rating="${product.rating}"></div>
-          <p class="text-[#8091A7] text-sm">(${product.reviews} Reviews)</p>
+  const renderProduct = (product) => {
+      const section = document.getElementById("product-section");
+
+      // Main product content
+      section.innerHTML = `
+        <div >
+          <img src="${selectedColor.image}" alt="${product.name}" class="h-auto selected-image w-auto flex-1 lg:h-[720px] lg:max-w-[600px]">
         </div>
-        <h5 class="text-[#6576FF] text-2xl text-start font-bold">
-          <div class="flex items-center gap-2">
-            <span class="text-[#8091A7] text-xl font-light line-through">$${product.price.original}.00</span>
-            <span>$${product.price.discounted}.00</span>
+        <div class="flex flex-col flex-1 justify-start space-y-5">
+          <h2 class="text-[40px] text-[#364A63] font-bold">${product.name}</h2>
+          <div class="flex gap-1 items-center">
+            <div class="stars flex gap-1 text-lg items-center"></div>
+            <div  data-rating="${product.rating}"></div>
+            <p class="text-[#8091A7] text-sm">(${product.reviews} Reviews)</p>
           </div>
-        </h5>
-        <p class="text-[#8091A7] text-lg text-start">${product.description}</p>
-        <div class="flex gap-[43px] text-[#8091A7] text-sm">
-          <p>Type</p>
-          <p>Model Number</p>
-        </div>
-        <div class="flex gap-6 text-[#364A63] text-base font-bold">
-          <p>${product.type}</p>
-          <p>${product.model_number}</p>
-        </div>
-        <p class="text-lg text-[#364A63] font-bold">Band Color</p>
-        <div id="color-options" class="flex gap-3"></div>
-        <p class="text-[#364A63] text-lg font-bold">Wrist Size</p>
-        <div id="size-options" class="flex gap-2 md:gap-5 mt-2 wrest-sizes"></div>
-        <div class="flex items-center gap-2  w-fit ">
-              <div class="flex items-center border-[0.5px] border-[#DBDFEA] rounded-md">
-                <button
-                onclick="handleDecrement()"
-                  id="minus"
-                  class="h-10 w-10 flex justify-center items-center border-r border-r-[#DBDFEA] rounded-none outline-none focus:outline-none"
+          <h5 class="text-[#6576FF] text-2xl text-start font-bold">
+            <div class="flex items-center gap-2">
+              <span class="text-[#8091A7] text-xl font-light line-through">$${product.price.original}.00</span>
+              <span>$${product.price.discounted}.00</span>
+            </div>
+          </h5>
+          <p class="text-[#8091A7] text-lg text-start">${product.description}</p>
+          <div class="flex gap-[43px] text-[#8091A7] text-sm">
+            <p>Type</p>
+            <p>Model Number</p>
+          </div>
+          <div class="flex gap-6 text-[#364A63] text-base font-bold">
+            <p>${product.type}</p>
+            <p>${product.model_number}</p>
+          </div>
+          <p class="text-lg text-[#364A63] font-bold">Band Color</p>
+          <div id="color-options" class="flex gap-3"></div>
+          <p class="text-[#364A63] text-lg font-bold">Wrist Size</p>
+          <div id="size-options" class="flex gap-2 md:gap-5 mt-2 wrest-sizes"></div>
+          <div class="flex items-center gap-2  w-fit ">
+                <div class="flex items-center border-[0.5px] border-[#DBDFEA] rounded-md">
+                  <button
+                    id="minus"
+                    class="h-10 w-10 flex justify-center items-center border-r border-r-[#DBDFEA] rounded-none outline-none focus:outline-none"
+                  >
+                      <i class="fa-solid fa-minus text-[#8091A7]" ></i>
+                  </button>
+                  <input
+                    id="quantity-input"
+                    type="text"
+                    value="${quantity}"
+                    readOnly
+                    class="w-16 h-10 border-0 font-normal text-center text-[#364A63] outline-none"
+                  />
+                  <button
+                    id="plus"
+                    class="h-10 w-10  border-l border-l-[#DBDFEA] flex justify-center items-center rounded-none focus:outline-none"
+                  >
+                  <i class="fa-solid fa-plus text-[#8091A7]"></i>
+                  </button>
+                </div>
+                <button 
+                  id="cartBtn"
+                  class="flex-1 bg-[#6576FF] text-[13px] font-bold text-white text-nowrap px-[18px] py-2 rounded-[3px] outline-none focus:outline-none"
                 >
-                    <i class="fa-solid fa-minus text-[#8091A7]" ></i>
+                  Add to Cart
                 </button>
-                <input
-                  id="quantity-input"
-                  type="text"
-                  value="${quantity}"
-                  readOnly
-                  class="w-16 h-10 border-0 font-normal text-center text-[#364A63] outline-none"
-                />
                 <button
-                  id="plus"
-                  class="h-10 w-10  border-l border-l-[#DBDFEA] flex justify-center items-center rounded-none focus:outline-none"
+                  class="h-10 w-10"
                 >
-                 <i class="fa-solid fa-plus text-[#8091A7]"></i>
+                <img src="/asset/heart-icon.png" alt="icon">
                 </button>
               </div>
-              <button 
-                id="cartBtn"
-                class="flex-1 bg-[#6576FF] text-[13px] font-bold text-white text-nowrap px-[18px] py-2 rounded-[3px] outline-none focus:outline-none"
-              >
-                Add to Cart
-              </button>
-              <button
-                class="h-10 w-10"
-              >
-                
-              </button>
-            </div>
-            <div id="cart-items"></div>
-      </div>
-    `;
-
-
-    //append colors
-    const colorOptions = document.getElementById("color-options");
-    product.colors.forEach((color,idx) => {
-      const colorDiv = document.createElement("div");
-      colorDiv.innerHTML = `
-        <div class="p-[1px] rounded-full selected-color ${idx === 0 ? `border border-[${currentColor}]` : ""}">
-          <div style="background-color: ${color.code}" class="h-4 w-4 rounded-full m-1 cursor-pointer"></div>
+              <div id="cart-items"></div>
         </div>
       `;
-      colorDiv.addEventListener('click',() => handleSelectedColor(color,idx))
-      colorOptions.appendChild(colorDiv);
-    });
 
-    //append sizes
-    const sizes = document.getElementById("size-options");
-    product.wrist_sizes.forEach((size,idx) => {
-      // console.log(size);
-      const sizeDiv = document.createElement("div");
-      sizeDiv.innerHTML = `
-        <div class="flex gap-3 border px-[18px] py-2 cursor-pointer sizes ${idx === 0 ? "border-[#6576FF]" : "border-[#DBDFEA]"}">
-            <p class=" ${idx === 0 ? "text-[#6576FF]" : "text-[#364A63]"} text-sm font-bold label">${size.label}</p>
-            <p class="text-[#8091A7] text-[13px]">$${size.price}</p>
-        </div>
-      `;
-      sizeDiv.addEventListener('click',() => handleSelectedSize(size,idx))
-      sizes.appendChild(sizeDiv);
-    });
 
-    // cart quantity
-    const quantityInput = document.getElementById('quantity-input');
+      //append colors
+      const colorOptions = document.getElementById("color-options");
+      product.colors.forEach((color,idx) => {
+        const colorDiv = document.createElement("div");
+        colorDiv.innerHTML = `
+          <div class="p-[1px] rounded-full selected-color ${idx === 0 ? `border border-[${currentColor}]` : ""}">
+            <div style="background-color: ${color.code}" class="h-4 w-4 rounded-full m-1 cursor-pointer"></div>
+          </div>
+        `;
+        colorDiv.addEventListener('click',() => handleSelectedColor(color,idx))
+        colorOptions.appendChild(colorDiv);
+      });
 
-    const handleIncrement = () => {
-        quantity ++;
-        updateQuantity();
-      }
-    
-    const handleDecrement = () => {
-        if(quantity > 0){
-            quantity -= 1;
-            updateQuantity();
+      //append sizes
+      const sizes = document.getElementById("size-options");
+      product.wrist_sizes.forEach((size,idx) => {
+        // console.log(size);
+        const sizeDiv = document.createElement("div");
+        sizeDiv.innerHTML = `
+          <div class="flex gap-3 border px-[18px] py-2 cursor-pointer sizes ${idx === 0 ? "border-[#6576FF]" : "border-[#DBDFEA]"}">
+              <p class=" ${idx === 0 ? "text-[#6576FF]" : "text-[#364A63]"} text-sm font-bold label">${size.label}</p>
+              <p class="text-[#8091A7] text-[13px]">$${size.price}</p>
+          </div>
+        `;
+        sizeDiv.addEventListener('click',() => handleSelectedSize(size,idx))
+        sizes.appendChild(sizeDiv);
+      });
+
+      // cart quantity
+      const quantityInput = document.getElementById('quantity-input');
+
+      const handleIncrement = () => {
+          quantity ++;
+          updateQuantity();
         }
-      }
-    const updateQuantity = () => {
-        quantityInput.value = quantity; 
-    };
+      
+      const handleDecrement = () => {
+          if(quantity > 0){
+              quantity -= 1;
+              updateQuantity();
+          }
+        }
+      const updateQuantity = () => {
+          quantityInput.value = quantity; 
+      };
 
-    document.getElementById('plus').addEventListener('click',handleIncrement)
-    document.getElementById('minus').addEventListener('click',handleDecrement);
-    document.getElementById('cartBtn').addEventListener('click',() => 
-      {handleAddToCart(product.id,selectedColor.image,product.name,selectedColor.name,currentSize,quantity,currentSize.price),cartItemsRender()});
-};
+      document.getElementById('plus').addEventListener('click',handleIncrement)
+      document.getElementById('minus').addEventListener('click',handleDecrement);
+      document.getElementById('cartBtn').addEventListener('click',() => 
+        {handleAddToCart(product.id,selectedColor.image,product.name,selectedColor.name,currentSize,quantity,currentSize.price)});
+  };
 
 
 
   // Initialize product rendering
   renderProduct(product);
+  renderStar();
